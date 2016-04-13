@@ -1,6 +1,6 @@
-config.mk
 php/images/data/www
+cscope.out
 pkgs/*
 includes/*
 /*/dl/*
-/*/build/*
+#/*/build/*
