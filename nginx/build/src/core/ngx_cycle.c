@@ -55,18 +55,15 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     ngx_core_module_t   *module;
     char                 hostname[NGX_MAXHOSTNAMELEN];
 
-    ngx_log_stderr(0, "58\n");
 
     ngx_timezone_update();
 
-    ngx_log_stderr(0, "62\n");
 
     /* force localtime update with a new timezone */
 
     tp = ngx_timeofday();
     tp->sec = 0;
 
-    ngx_log_stderr(0, "69\n");
     ngx_time_update();
 
 
@@ -78,13 +75,11 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     }
     pool->log = log;
 
-    ngx_log_stderr(0, "81\n");
     cycle = ngx_pcalloc(pool, sizeof(ngx_cycle_t));
     if (cycle == NULL) {
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "87\n");
 
     cycle->pool = pool;
     cycle->log = log;
@@ -96,7 +91,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "99\n");
 
     cycle->prefix.len = old_cycle->prefix.len;
     cycle->prefix.data = ngx_pstrdup(pool, &old_cycle->prefix);
@@ -104,7 +98,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "107\n");
 
     cycle->conf_file.len = old_cycle->conf_file.len;
     cycle->conf_file.data = ngx_pnalloc(pool, old_cycle->conf_file.len + 1);
@@ -112,7 +105,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "115\n");
     ngx_cpystrn(cycle->conf_file.data, old_cycle->conf_file.data,
                 old_cycle->conf_file.len + 1);
 
@@ -122,7 +114,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "125\n");
 
 
     n = old_cycle->paths.nelts ? old_cycle->paths.nelts : 10;
@@ -132,7 +123,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "135\n");
 
     cycle->paths.nelts = 0;
     cycle->paths.size = sizeof(ngx_path_t *);
@@ -156,7 +146,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "159\n");
 
 
     if (old_cycle->shared_memory.part.nelts) {
@@ -176,7 +165,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "179\n");
 
     n = old_cycle->listening.nelts ? old_cycle->listening.nelts : 10;
 
@@ -185,7 +173,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "188\n");
 
     cycle->listening.nelts = 0;
     cycle->listening.size = sizeof(ngx_listening_t);
@@ -193,9 +180,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
     cycle->listening.pool = pool;
 
 
-    ngx_log_stderr(0, "196\n");
     ngx_queue_init(&cycle->reusable_connections_queue);
-    ngx_log_stderr(0, "198\n");
 
 
     cycle->conf_ctx = ngx_pcalloc(pool, ngx_max_module * sizeof(void *));
@@ -203,7 +188,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "206\n");
 
 
     if (gethostname(hostname, NGX_MAXHOSTNAMELEN) == -1) {
@@ -211,7 +195,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "214\n");
 
     /* on Linux gethostname() silently truncates name that does not fit */
 
@@ -223,7 +206,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "226\n");
 
     ngx_strlow(cycle->hostname.data, (u_char *) hostname, cycle->hostname.len);
 
@@ -244,7 +226,6 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
             cycle->conf_ctx[ngx_modules[i]->index] = rv;
         }
     }
-    ngx_log_stderr(0, "247\n");
 
 
     senv = environ;
@@ -257,14 +238,12 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "260\n");
 
     conf.temp_pool = ngx_create_pool(NGX_CYCLE_POOL_SIZE, log);
     if (conf.temp_pool == NULL) {
         ngx_destroy_pool(pool);
         return NULL;
     }
-    ngx_log_stderr(0, "267\n");
 
 
     conf.ctx = cycle->conf_ctx;
@@ -283,14 +262,12 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         ngx_destroy_cycle_pools(&conf);
         return NULL;
     }
-    ngx_log_stderr(0, "286\n");
 
     if (ngx_conf_parse(&conf, &cycle->conf_file) != NGX_CONF_OK) {
         environ = senv;
         ngx_destroy_cycle_pools(&conf);
         return NULL;
     }
-    ngx_log_stderr(0, "293\n");
 
     if (ngx_test_config && !ngx_quiet_mode) {
         ngx_log_stderr(0, "the configuration file %s syntax is ok",

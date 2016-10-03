@@ -8,7 +8,6 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <nginx.h>
-
 static ngx_int_t ngx_add_inherited_sockets(ngx_cycle_t *cycle);
 static ngx_int_t ngx_get_options(int argc, char *const *argv);
 static ngx_int_t ngx_process_options(ngx_cycle_t *cycle);
@@ -199,35 +198,30 @@ static char **ngx_os_environ;
 int ngx_cdecl
 main(int argc, char *const *argv)
 {
-
     ngx_int_t         i;
     ngx_log_t        *log;
     ngx_cycle_t      *cycle, init_cycle;
     ngx_core_conf_t  *ccf;
-
     ngx_debug_init();
-
+   
     if (ngx_strerror_init() != NGX_OK) {
         return 1;
     }
-
+	
     ngx_write_stderr("Launching nginx" NGX_LINEFEED);
-
-    ngx_write_stderr("217" NGX_LINEFEED);
 
     if (ngx_get_options(argc, argv) != NGX_OK) {
         return 1;
     }
 
-    ngx_log_stderr(0, "ngx_conf_file: %s", ngx_conf_file);
     /* RG:
      * Since it is 3:00 AM and I don't really understand their parsing stuff
      * Let's just set the conf_file ourselfs
      */
-    ngx_conf_file = (u_char*)"/data/conf/nginx.conf";
+    ngx_conf_file = (u_char*) "/data/conf/nginx.conf";
+    ngx_log_stderr(0, "ngx_conf_file: %s", ngx_conf_file);
     ngx_quiet_mode = 0;
     ngx_test_config = 0;
-    ngx_log_stderr(0, "ngx_conf_file: %s", ngx_conf_file);
 
     if (ngx_show_version) {
         ngx_write_stderr("nginx version: " NGINX_VER_BUILD NGX_LINEFEED);
@@ -355,9 +349,7 @@ main(int argc, char *const *argv)
         ngx_modules[i]->index = ngx_max_module++;
     }
 
-    ngx_log_stderr(0, "364\n");
     cycle = ngx_init_cycle(&init_cycle);
-    ngx_log_stderr(0, "366\n");
     if (cycle == NULL) {
         if (ngx_test_config) {
             ngx_log_stderr(0, "configuration file %s test failed",
@@ -367,7 +359,6 @@ main(int argc, char *const *argv)
         return 1;
     }
 
-    ngx_log_stderr(0, "376\n");
 
     if (ngx_test_config) {
         if (!ngx_quiet_mode) {
@@ -377,8 +368,6 @@ main(int argc, char *const *argv)
 
         return 0;
     }
-
-    ngx_log_stderr(0, "387\n");
 
     if (ngx_signal) {
         return ngx_signal_process(cycle, ngx_signal);
@@ -431,13 +420,12 @@ main(int argc, char *const *argv)
 
     ngx_use_stderr = 0;
 
+    ngx_log_stderr(0, "nginx boot done\n");
     if (ngx_process == NGX_PROCESS_SINGLE) {
         ngx_single_process_cycle(cycle);
-
     } else {
         ngx_master_process_cycle(cycle);
     }
-
     return 0;
 }
 
