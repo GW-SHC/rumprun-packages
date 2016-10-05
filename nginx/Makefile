@@ -47,7 +47,7 @@ NGINX_CONF_OPTS += \
 	--http-uwsgi-temp-path=/tmp/uwsgi \
 	--with-http_ssl_module \
 	--with-ipv6 \
-	--with-pcre
+	--without-http_rewrite_module
 
 build/Makefile: build/stamp_patch
 	(cd build; $(NGINX_CONF_ENV) ./configure $(NGINX_CONF_OPTS))
