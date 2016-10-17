@@ -208,7 +208,7 @@ main(int argc, char *const *argv)
         return 1;
     }
 	
-    ngx_write_stderr("Launching nginx" NGX_LINEFEED);
+    ngx_write_stderr("Launching nginx" NGX_LINEFEED); 
 
     if (ngx_get_options(argc, argv) != NGX_OK) {
         return 1;
@@ -421,6 +421,27 @@ main(int argc, char *const *argv)
     ngx_use_stderr = 0;
 
     ngx_log_stderr(0, "nginx boot done\n");
+
+    struct rlimit rlmt;
+    if (getrlimit(RLIMIT_NOFILE, &rlmt) == -1) {
+        ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                      "getrlimit(RLIMIT_NOFILE) failed, ignored");
+    }
+    ngx_log_stderr(0, "rlmt.rlim_cur: %d, rlmt.rlim_max %d", rlmt.rlim_cur, rlmt.rlim_max);
+    rlmt.rlim_max = 100480;
+    rlmt.rlim_cur = 100480;
+    if (setrlimit(RLIMIT_NOFILE, &rlmt) == -1) {
+            ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                          "setrlimit(RLIMIT_NOFILE, %i) failed",
+                          ccf->rlimit_nofile);
+    }
+    struct rlimit rlmt2;
+    if (getrlimit(RLIMIT_NOFILE, &rlmt2) == -1) {
+        ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                      "getrlimit(RLIMIT_NOFILE) failed, ignored");
+    }
+    ngx_log_stderr(0, "rlmt2.rlim_cur: %d, rlmt2.rlim_max %d", rlmt2.rlim_cur, rlmt2.rlim_max);
+
     if (ngx_process == NGX_PROCESS_SINGLE) {
         ngx_single_process_cycle(cycle);
     } else {
